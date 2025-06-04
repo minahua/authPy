@@ -4,7 +4,7 @@ import unittest
 class myunitest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.auth=commonData.baseData.authorization.value()
+        cls.auth=commonData.baseData.authorization.value
     @classmethod
     def tearDownClass(cls) -> None:
         print("第一次结束后操作")

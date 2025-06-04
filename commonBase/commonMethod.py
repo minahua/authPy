@@ -7,13 +7,20 @@ import datetime
 from urllib import parse
 from commonBase.envData.envData_maimai100 import env_maimai
 from commonBase.envData.envData_kuaileyouxuan import env_kuaile
+from commonBase.envData.envData_preprod import env_preprod
 from commonBase.envData.commonData import baseData
 
 
 class comMethod():
     def __init__(self, env):
+        """
+        根据使用环境，初始化数据
+        :param env: 使用环境
+        """
         if env == 'kuaileyouxuan':
             self.envData = env_kuaile
+        elif env=='preprod':
+            self.envData = env_preprod
         else:
             self.envData = env_maimai
         self.envComData = baseData
@@ -21,6 +28,10 @@ class comMethod():
         self.getHeaders()
 
     def getHeaders(self):
+        """
+        拼接请求头信息
+        :return:
+        """
         tenantid = self.envData.tenantId.value
         authorization = self.envComData.authorization.value
         self.headers = {'Authorization': authorization,
@@ -31,26 +42,58 @@ class comMethod():
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'}
 
     def sendRequests(self, method, api, body=None):
+        """
+        发送https请求
+        :param method: 请求方法
+        :param api: 请求地址
+        :param body: 请求body
+        :return: 请求结果
+        """
         if method == 'get':
             self.con.request('GET', api, headers=self.headers)
-            res = gzip.decompress(self.con.getresponse().read()).decode()
         elif method == 'post':
             self.con.request('POST', api, headers=self.headers, body=json.dumps(body))
-            res = gzip.decompress(self.con.getresponse().read()).decode()
         elif method == 'put':
             self.con.request('PUT', api, headers=self.headers, body=json.dumps(body))
-            res = gzip.decompress(self.con.getresponse().read()).decode()
         elif method == 'delete':
             self.con.request('DELETE', api, headers=self.headers, body=json.dumps(body))
-            res = gzip.decompress(self.con.getresponse().read()).decode()
         else:
-            res = ''
-        return res
+            return {'status':999,'msg':self.envComData.err_req.value}
+        response=self.con.getresponse()
+        return {'status':response.status,
+                'method':method,
+                'api':api,
+                'body':body,
+                'results':gzip.decompress(response.read()).decode()
+                }
 
     def compareResult(self, exceptInfo, resultInfo,comType):
-        pass
+        """
+        断言判断
+        :param exceptInfo: 预期值
+        :param resultInfo: 实际值
+        :param comType: 判断方式 1：预期值与实际值相同 2：预期值包含实际值 3：实际值包含预期值
+        :return:
+        """
+        if isinstance(resultInfo,list):
+            comparisonResults=True
+            for res in resultInfo:
+                comparisonResults&=self.compareResult(exceptInfo,res,comType)
+            return comparisonResults
+        if comType==1:
+            return exceptInfo==resultInfo
+        elif comType==2:
+            return resultInfo in exceptInfo
+        elif comType==3:
+            return exceptInfo in resultInfo
+        else:
+            return self.envComData.err_comTpye.value
 
     def conMysql(self):
+        """
+        连接mysql数据库
+        :return:
+        """
         host = self.envData.mysqlHost.value
         port = int(self.envData.mysqlPort.value)
         username = self.envData.mysqlUser.value
@@ -61,6 +104,12 @@ class comMethod():
         self.cur = self.conSjk.cursor()
 
     def operateMysql(self, sql, operateType=None):
+        """
+        执行sql
+        :param sql: sql语句
+        :param operateType: 执行方式，默认查询
+        :return:
+        """
         self.cur.execute(sql)
         if operateType:
             self.conSjk.commit()
@@ -71,15 +120,35 @@ class comMethod():
         return res
 
     def getTimeStamp(self, strTime):
+        """
+        标准时间转化为时间戳
+        :param strTime: 标准时间
+        :return: 时间戳
+        """
         return int(time.mktime(time.strptime(strTime, "%Y-%m-%d %H:%M:%S")))
 
     def getFormatTime(self,timeStamp):
+        """
+        时间戳转化为标准时间
+        :param timeStamp: 时间戳
+        :return: 标准时间
+        """
         return datetime.datetime.fromtimestamp(timeStamp).strftime('%Y-%m-%d %H:%M:%S')
 
     def getAnyDay(self,numDay=0):
+        """
+        获取当前时间之前之后时间，格式：%Y%m%d
+        :param numDay: 之前几天使用负数，之后几天使用正数
+        :return:
+        """
         return (datetime.datetime.now().date()-datetime.timedelta(numDay)).strftime('%Y%m%d')
 
     def getUrlQuote(self,strUrl):
+        """
+        编码中文字符
+        :param strUrl:
+        :return:
+        """
         return parse.quote(strUrl)
 
 if __name__ == '__main__':

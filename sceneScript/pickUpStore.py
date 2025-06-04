@@ -1,10 +1,16 @@
+from jsonpath import jsonpath
 from commonBase.commonMethod import comMethod
 
-class pickUpStory():
+class pickUpStore():
     def __init__(self,env):
         self.comMethod=comMethod(env)
+        self.jsPath=jsonpath
 
-    def creatStory(self):
+    def creatStore(self):
+        """
+        新增门店
+        :return:
+        """
         reqMethod='post'
         apiInfo='/admin-api/trade/delivery/pick-up-store/create'
         dataDay=self.comMethod.getAnyDay()
@@ -14,7 +20,7 @@ class pickUpStory():
                     "phone": "135"+dataDay,
                     "logo": logo,
                     "detailAddress": "测试门店"+dataDay,
-                    "introduction": "",
+                    "introduction": "门店简介"+dataDay,
                     "areaId": 310104,
                     "openingTime": "09:45",
                     "closingTime": "14:30",
@@ -25,20 +31,32 @@ class pickUpStory():
         res=self.comMethod.sendRequests(reqMethod,apiInfo,bodyInfo)
         return res
 
-    def getStory(self,stroyName):
+    def getStore(self,StoreName):
+        """
+        查询门店
+        :return:
+        """
         reqMethod = 'get'
-        stroyname=self.comMethod.getUrlQuote(stroyName)
-        apiInfo = '/admin-api/trade/delivery/pick-up-store/page?pageNo=1&pageSize=10&status=0&phone=&name='+stroyname
+        storename=self.comMethod.getUrlQuote(StoreName)
+        apiInfo = '/admin-api/trade/delivery/pick-up-store/page?pageNo=1&pageSize=10&status=0&phone=&name='+storename
         res = self.comMethod.sendRequests(reqMethod, apiInfo)
         return res
 
-    def deleteStory(self,storyId):
+    def deleteStore(self,StoreId):
+        """
+        删除门店
+        :return:
+        """
         reqMethod = 'delete'
-        apiInfo = f'/admin-api/trade/delivery/pick-up-store/delete?id={storyId}'
+        apiInfo = f'/admin-api/trade/delivery/pick-up-store/delete?id={StoreId}'
         res = self.comMethod.sendRequests(reqMethod, apiInfo)
         return res
 
-    def updateStory(self,storyId):
+    def updateStore(self,StoreId):
+        """
+        更新门店
+        :return:
+        """
         reqMethod = 'put'
         apiInfo = f'/admin-api/trade/delivery/pick-up-store/update'
         dataDay = self.comMethod.getAnyDay()
@@ -56,7 +74,15 @@ class pickUpStory():
                 "latitude": 2,
                 "longitude": 1,
                 "status": 0,
-                "id": storyId,
+                "id": StoreId,
             }
         res = self.comMethod.sendRequests(reqMethod, apiInfo,body)
         return res
+
+    def runStoreApi(self):
+        """
+        门店流程：新增、查询、修改、查询、删除、查询
+        :return:
+        """
+        res_create=self.creatStore()
+        StoreId=1
