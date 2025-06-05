@@ -27,13 +27,16 @@ class comMethod():
         self.con = http.client.HTTPSConnection(self.envData.host.value)
         self.getHeaders()
 
-    def getHeaders(self):
+    def getHeaders(self,loginId='manage'):
         """
         拼接请求头信息
         :return:
         """
         tenantid = self.envData.tenantId.value
-        authorization = self.envComData.authorization.value
+        if loginId=='manage':
+            authorization = self.envComData.authorization.value
+        else:
+            authorization = self.envComData.authorizationH5.value
         self.headers = {'Authorization': authorization,
                         'Content-Type': 'application/json',
                         'Accept': '*/*',

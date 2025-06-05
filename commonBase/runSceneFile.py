@@ -1,3 +1,4 @@
+import time
 from sceneScript import pickUpStore
 from sceneScript import welfareCoupon
 
@@ -7,5 +8,7 @@ env='maimai100'
 # ten=pickUpStore.pickUpStore(env)
 # res=ten.runStoreApi()
 ten=welfareCoupon.welfareCoupon(env)
-res=ten.takeCoupon()
-print(res)
+for i in range(10):
+    res=ten.takeCoupon()
+    print(res)
+    time.sleep(4)

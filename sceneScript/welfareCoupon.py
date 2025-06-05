@@ -54,6 +54,7 @@ class welfareCoupon():
         reqMethod = 'post'
         apiInfo = '/app-api/product/user-coupon/take'
         nickname = self.comMethod.envComData.authorizationH5Name.value
+        self.comMethod.getHeaders('h5')
         bodyInfo = {
             "couponId": couponId,
             "nickname": nickname,
