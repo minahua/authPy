@@ -110,5 +110,14 @@ class pickUpStore():
         compareKey = self.comMethod.compareResult(newStoreName, getStoreNames1, 1)
         if not compareKey:
             print('查询结果-修改，不正确')
+        res_delete=self.deleteStore(storeId)
+        resultsInfo.append(res_delete)
+        sql=f'select * from trade_delivery_pick_up_store where id={storeId}'
+        self.comMethod.conMysql()
+        res_mysql=self.comMethod.operateMysql(sql)
+        # print(res_mysql)
+        compareKey = self.comMethod.compareResult(1, ord(res_mysql[0]['deleted']), 1)
+        if not compareKey:
+            print('查询结果-删除，不正确')
         return resultsInfo
 

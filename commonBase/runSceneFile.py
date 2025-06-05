@@ -1,12 +1,11 @@
 from sceneScript import pickUpStore
+from sceneScript import welfareCoupon
 
 # env='kuaileyouxuan'
 # env='preprod'
 env='maimai100'
-ten=pickUpStore.pickUpStore(env)
-# res=ten.creatStore()
-# res=ten.getStore('AAA')
-# res=ten.deleteStore(49)
-# res=ten.updateStore(31)
-res=ten.runStoreApi()
+# ten=pickUpStore.pickUpStore(env)
+# res=ten.runStoreApi()
+ten=welfareCoupon.welfareCoupon(env)
+res=ten.takeCoupon()
 print(res)
