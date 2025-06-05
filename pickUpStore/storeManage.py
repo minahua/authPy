@@ -3,44 +3,63 @@
 import unittest
 from commonBase.commonMethod import comMethod
 
-class TestMathFunc(unittest.TestCase):
+class TestStoreFunc(unittest.TestCase):
+    params = None
 
     @classmethod
     def setUpClass(cls):
-        print('start')
+        """
+        测试执行前，数据准备
+        :return:
+        """
+        if cls.params:
+            cls.comMethod=comMethod(cls.params['env'])
+        else:
+            cls.comMethod = comMethod()
 
     @classmethod
     def tearDownClass(cls):
         print('end')
 
-    def test_add(self):
-        """Test method add(a, b)"""
-        print('add')
-        self.assertEqual(3, 1+2)
-        self.assertNotEqual(3, 2+2)
+    def test_creatStore(self):
+        """
+        新增门店
+        :return:
+        """
+        reqMethod='post'
+        apiInfo='/admin-api/trade/delivery/pick-up-store/create'
+        dataDay=self.comMethod.getAnyDay()
+        logo=self.comMethod.envData.logoQc.value
+        bodyInfo={
+                    "name": "测试门店"+dataDay,
+                    "phone": "135"+dataDay,
+                    "logo": logo,
+                    "detailAddress": "测试门店"+dataDay,
+                    "introduction": "门店简介"+dataDay,
+                    "areaId": 310104,
+                    "openingTime": "09:45",
+                    "closingTime": "14:30",
+                    "latitude": "2",
+                    "longitude": "1",
+                    "status": 0,
+                    "contact": "11"}
+        res=self.comMethod.sendRequests(reqMethod,apiInfo,bodyInfo)
+        self.assertEqual(res['status'],200)
 
-    def test_minus(self):
-        """Test method minus(a, b)"""
-        print('--')
-        self.assertEqual(1, 3-2)
-
-    def test_multi(self):
-        """Test method multi(a, b)"""
-        print('*')
-        self.assertEqual(6,2*3)
-
-    def test_divide(self):
-        """Test method divide(a, b)"""
-        print('/')
-        self.assertEqual(2, 2/1)
-        self.assertEqual(2.5,5/2)
+    def test_getStore(self,StoreName='店铺001'):
+        """
+        查询门店
+        :return:
+        """
+        reqMethod = 'get'
+        storename=self.comMethod.getUrlQuote(StoreName)
+        apiInfo = '/admin-api/trade/delivery/pick-up-store/page?pageNo=1&pageSize=10&status=0&phone=&name='+storename
+        res = self.comMethod.sendRequests(reqMethod, apiInfo)
+        self.assertEqual(res['status'],200)
 
 
 if __name__ == '__main__':
     suite = unittest.TestSuite()
-
-    tests = [TestMathFunc("test_add"), TestMathFunc("test_minus"), TestMathFunc("test_divide")]
-    suite.addTests(tests)
-
+    suite.addTests([TestStoreFunc('test_getStore')])
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)

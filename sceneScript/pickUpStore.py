@@ -16,7 +16,7 @@ class pickUpStore():
         dataDay=self.comMethod.getAnyDay()
         logo=self.comMethod.envData.logoQc.value
         bodyInfo={
-                    "name": "测试门店"+dataDay,
+                    "name": "新增测试门店"+dataDay,
                     "phone": "135"+dataDay,
                     "logo": logo,
                     "detailAddress": "测试门店"+dataDay,
@@ -84,5 +84,31 @@ class pickUpStore():
         门店流程：新增、查询、修改、查询、删除、查询
         :return:
         """
+        resultsInfo=[]
         res_create=self.creatStore()
-        StoreId=1
+        resultsInfo.append(res_create)
+        if res_create.get('status',0)!=200:
+            return resultsInfo
+        storeId=res_create.get('result').get('data')
+        storeName="新增测试门店"+self.comMethod.getAnyDay()
+        res_get=self.getStore(storeName)
+        resultsInfo.append(res_get)
+        if res_get.get('status',0)!=200:
+            return resultsInfo
+        getStoreNames=jsonpath(res_get.get('result'),f'$.data.list[*].name')
+        compareKey=self.comMethod.compareResult(storeName,getStoreNames,1)
+        if not compareKey:
+            print('查询结果-新增，不正确')
+        res_upStore=self.updateStore(storeId)
+        resultsInfo.append(res_upStore)
+        if res_upStore.get('status',0)!=200:
+            return resultsInfo
+        newStoreName="修改门店"+self.comMethod.getAnyDay()
+        res_get1 = self.getStore(newStoreName)
+        resultsInfo.append(res_get1)
+        getStoreNames1 = jsonpath(res_get1.get('result'), f'$.data.list[?(@.id=={storeId})].name')
+        compareKey = self.comMethod.compareResult(newStoreName, getStoreNames1, 1)
+        if not compareKey:
+            print('查询结果-修改，不正确')
+        return resultsInfo
+

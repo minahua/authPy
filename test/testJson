@@ -1,0 +1,123 @@
+[
+  {
+    'status': 200,
+    'method': 'post',
+    'api': '/admin-api/trade/delivery/pick-up-store/create',
+    'body': {
+      'name': '新增测试门店20250605',
+      'phone': '13520250605',
+      'logo': 'https://static.kuaileyouxuan.com/662a8885ee71c12aed3c10ce2afbcb48ddc6cf79c57d3d3a7a77e53665aaa1f1.png',
+      'detailAddress': '测试门店20250605',
+      'introduction': '门店简介20250605',
+      'areaId': 310104,
+      'openingTime': '09:45',
+      'closingTime': '14:30',
+      'latitude': '2',
+      'longitude': '1',
+      'status': 0,
+      'contact': '11'
+    },
+    'result': {
+      'code': 0,
+      'data': 84,
+      'msg': ''
+    }
+  },
+  {
+    'status': 200,
+    'method': 'get',
+    'api': '/admin-api/trade/delivery/pick-up-store/page?pageNo=1&pageSize=10&status=0&phone=&name=%E6%96%B0%E5%A2%9E%E6%B5%8B%E8%AF%95%E9%97%A8%E5%BA%9720250605',
+    'body': None,
+    'result': {
+      'code': 0,
+      'data': {
+        'list': [
+          {
+            'name': '新增测试门店20250605',
+            'introduction': '门店简介20250605',
+            'phone': '13520250605',
+            'contact': '11',
+            'areaId': 310104,
+            'detailAddress': '测试门店20250605',
+            'logo': 'https://static.kuaileyouxuan.com/662a8885ee71c12aed3c10ce2afbcb48ddc6cf79c57d3d3a7a77e53665aaa1f1.png',
+            'openingTime': '09:45',
+            'closingTime': '14:30',
+            'latitude': 2.0,
+            'longitude': 1.0,
+            'status': 0,
+            'id': 84,
+            'createTime': 1749103612000,
+            'ifLock': 0,
+            'userName': None,
+            'userId': None,
+            'memberCount': 0,
+            'saleAmount': 0
+          }
+        ],
+        'total': 1
+      },
+      'msg': ''
+    }
+  },
+  {
+    'status': 200,
+    'method': 'put',
+    'api': '/admin-api/trade/delivery/pick-up-store/update',
+    'body': {
+      'name': '修改门店20250605',
+      'introduction': '门店简介20250605',
+      'phone': '13520250605',
+      'contact': '门店联系人20250605',
+      'areaId': 310104,
+      'detailAddress': '修改门店20250605',
+      'logo': 'https://static.kuaileyouxuan.com/662a8885ee71c12aed3c10ce2afbcb48ddc6cf79c57d3d3a7a77e53665aaa1f1.png',
+      'openingTime': '09:45',
+      'closingTime': '14:30',
+      'latitude': 2,
+      'longitude': 1,
+      'status': 0,
+      'id': 84
+    },
+    'result': {
+      'code': 0,
+      'data': True,
+      'msg': ''
+    }
+  },
+  {
+    'status': 200,
+    'method': 'get',
+    'api': '/admin-api/trade/delivery/pick-up-store/page?pageNo=1&pageSize=10&status=0&phone=&name=%E4%BF%AE%E6%94%B9%E9%97%A8%E5%BA%9720250605',
+    'body': None,
+    'result': {
+      'code': 0,
+      'data': {
+        'list': [
+          {
+            'name': '修改门店20250605',
+            'introduction': '门店简介20250605',
+            'phone': '13520250605',
+            'contact': '门店联系人20250605',
+            'areaId': 310104,
+            'detailAddress': '修改门店20250605',
+            'logo': 'https://static.kuaileyouxuan.com/662a8885ee71c12aed3c10ce2afbcb48ddc6cf79c57d3d3a7a77e53665aaa1f1.png',
+            'openingTime': '09:45',
+            'closingTime': '14:30',
+            'latitude': 2.0,
+            'longitude': 1.0,
+            'status': 0,
+            'id': 84,
+            'createTime': 1749103612000,
+            'ifLock': 0,
+            'userName': None,
+            'userId': None,
+            'memberCount': 0,
+            'saleAmount': 0
+          }
+        ],
+        'total': 1
+      },
+      'msg': ''
+    }
+  }
+]

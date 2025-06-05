@@ -12,7 +12,7 @@ from commonBase.envData.commonData import baseData
 
 
 class comMethod():
-    def __init__(self, env):
+    def __init__(self, env=None):
         """
         根据使用环境，初始化数据
         :param env: 使用环境
@@ -64,7 +64,7 @@ class comMethod():
                 'method':method,
                 'api':api,
                 'body':body,
-                'results':gzip.decompress(response.read()).decode()
+                'result':json.loads(gzip.decompress(response.read()).decode())
                 }
 
     def compareResult(self, exceptInfo, resultInfo,comType):
@@ -125,7 +125,7 @@ class comMethod():
         :param strTime: 标准时间
         :return: 时间戳
         """
-        return int(time.mktime(time.strptime(strTime, "%Y-%m-%d %H:%M:%S")))
+        return time.mktime(time.strptime(strTime, "%Y-%m-%d %H:%M:%S"))
 
     def getFormatTime(self,timeStamp):
         """
