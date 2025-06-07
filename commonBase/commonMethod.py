@@ -1,5 +1,6 @@
 import http.client
 import gzip
+import requests
 import json
 import pymysql
 import time
@@ -24,7 +25,8 @@ class comMethod():
         else:
             self.envData = env_maimai
         self.envComData = baseData
-        self.con = http.client.HTTPSConnection(self.envData.host.value)
+        # self.con = http.client.HTTPSConnection(self.envData.host.value)
+        self.con = requests
         self.getHeaders()
 
     def getHeaders(self,loginId='manage'):
@@ -39,12 +41,11 @@ class comMethod():
             authorization = self.envComData.authorizationH5.value
         self.headers = {'Authorization': authorization,
                         'Content-Type': 'application/json',
-                        'Accept': '*/*',
+                        'Accept': 'application/json',
                         'Tenant-id': tenantid,
-                        'accept-encoding': 'gzip, deflate, br, zstd',
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'}
 
-    def sendRequests(self, method, api, body=None):
+    def sendRequests1(self, method, api, body=None):
         """
         发送https请求
         :param method: 请求方法
@@ -63,12 +64,63 @@ class comMethod():
         else:
             return {'status':999,'msg':self.envComData.err_req.value}
         response=self.con.getresponse()
+        # msg=response.read()
+        # print(response.status,msg.decode('utf-8'))
         return {'status':response.status,
                 'method':method,
                 'api':api,
                 'body':body,
-                'result':json.loads(gzip.decompress(response.read()).decode())
+                # 'result':json.loads(gzip.decompress(response.read()).decode())
+                'result':response.read().decode()
                 }
+
+    def sendRequests(self, method, api, body=None):
+        """
+        发送https请求
+        :param method: 请求方法
+        :param api: 请求地址
+        :param body: 请求body
+        :return: 请求结果
+        """
+        url='https://'+self.envData.host.value+api
+        if method == 'get':
+            res=self.con.request('GET', url, headers=self.headers)
+        elif method == 'post':
+            res=self.con.request('POST', url, headers=self.headers, json=body)
+        elif method == 'put':
+            res=self.con.request('PUT', url, headers=self.headers, json=body)
+        elif method == 'delete':
+            res=self.con.request('DELETE', url, headers=self.headers, json=body)
+        else:
+            return {'status':999,'msg':self.envComData.err_req.value}
+        # response=res.json()
+        # print(res.status_code,response)
+        return {'status':res.status_code,
+                'method':method,
+                'api':api,
+                'body':body,
+                'result':res.json()
+                }
+
+    def exportSend(self,method, api):
+        """
+        导出数据至Excel
+        :param method:
+        :param api:
+        :return:
+        """
+        con = http.client.HTTPSConnection(self.envData.host.value)
+        tenantid = self.envData.tenantId.value
+        authorization = self.envComData.authorization.value
+        headers = {'Authorization': authorization,
+                   'Content-Type': 'text/html; charset=utf-8',
+                   'Accept': 'application/json',
+                   'Tenant-id': tenantid,
+                   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'}
+        con.request('GET', api, headers=headers)
+        with open(r'D:\authPy\test\test.xlsx', 'wb') as f:
+            f.write(con.getresponse().read())
+        return '下载保存成功'
 
     def compareResult(self, exceptInfo, resultInfo,comType):
         """

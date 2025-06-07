@@ -2,14 +2,52 @@ import requests
 import time
 import datetime
 import asyncio
+import aiohttp
 from urllib import parse
 from jsonpath import jsonpath
 from commonBase.commonMethod import comMethod
 
-com=comMethod()
-print(com.getAnyDay(),type(com.getAnyDay()))
-print(com.getTimeStamp('2025-06-05 14:13:14'),type(com.getTimeStamp('2025-06-05 14:13:14')))
-print(com.getFormatTime(1781193600),type(com.getFormatTime(1781193600)))
+# a=b'\x01'
+# print(type(a))
+# print(ord(a))
+
+head={'Authorization': 'f59cae267e354c22ac29cd5e6deffac6',
+                        'Content-Type': 'application/json',
+                        'Accept': '*/*',
+                        'Tenant-id': '166',
+                        'accept-encoding': 'gzip, deflate, br, zstd',
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'}
+async def fetch_get(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url,headers=head) as response:
+            return await response.text()
+
+async def fetch_post(url, data):
+    async with aiohttp.ClientSession() as session:
+        async with session.post(url, json=data,headers=head) as response:
+            return await response.json()
+
+# 使用示例
+async def main():
+    url = "https://api-staging.maimai100.cn/admin-api/trade/delivery/pick-up-store/page?pageNo=1&pageSize=10"
+    result = await fetch_get(url)
+    print(result)
+
+# async def main1():
+#     url = "https://httpbin.org/post"
+#     data = {"key": "value"}
+#     result = await fetch_post(url, data)
+#     print(result)
+
+asyncio.run(main())
+# asyncio.run(main1())
+
+# com=comMethod()
+# # print(com.getAnyDay(),type(com.getAnyDay()))
+# # print(com.getTimeStamp('2025-06-05 14:13:14'),type(com.getTimeStamp('2025-06-05 14:13:14')))
+# print(com.getFormatTime(1749744000),type(com.getFormatTime(1781193600)))
+# print(com.getFormatTime(1749196346),type(com.getFormatTime(1781193600)))
+# print(com.envComData.args)
 
 # def compareResult(exceptInfo, resultInfo, comType):
 #     """
@@ -36,117 +74,93 @@ a={
     "data": {
         "list": [
             {
-                "name": "店铺001",
-                "introduction": "dsad",
-                "phone": "18125632563",
-                "contact": "cm",
-                "areaId": 510107,
-                "detailAddress": "fff21434",
-                "logo": "https://static.kuaileyouxuan.com/662a8885ee71c12aed3c10ce2afbcb48ddc6cf79c57d3d3a7a77e53665aaa1f1.png",
-                "openingTime": "10:00",
-                "closingTime": "15:30",
-                "latitude": 2.0,
-                "longitude": 32.0,
-                "status": 0,
-                "id": 28,
-                "createTime": 1747722823000,
-                "ifLock": 1,
-                "userName": "一路有光",
-                "userId": 10200,
-                "memberCount": 5,
-                "saleAmount": 15
+                "id": 120,
+                "createTime": 1749106126000,
+                "name": "福利券",
+                "status": 1,
+                "validityStartTime": 1749052800000,
+                "validityEndTime": 1780675200000
             },
             {
-                "name": "qbcs",
-                "introduction": "",
-                "phone": "17767563309",
-                "contact": "1",
-                "areaId": 150303,
-                "detailAddress": "1",
-                "logo": "https://static.kuaileyouxuan.com/693f66a4c2f20ec651cc637ed43960c1026f042706440f49ea03be5d7f798255.png",
-                "openingTime": "08:30",
-                "closingTime": "13:30",
-                "latitude": 1.0,
-                "longitude": 1.0,
-                "status": 0,
-                "id": 26,
-                "createTime": 1747386241000,
-                "ifLock": 0,
-                "userName": None,
-                "userId": None,
-                "memberCount": 1,
-                "saleAmount": 0
+                "id": 119,
+                "createTime": 1748072517000,
+                "name": "失效福利券001",
+                "status": 1,
+                "validityStartTime": 1747929600000,
+                "validityEndTime": 1748620800000
             },
             {
-                "name": "AAA",
-                "introduction": "",
-                "phone": "19138809365",
-                "contact": "11",
-                "areaId": 110101,
-                "detailAddress": "1",
-                "logo": "https://lplb.oss-cn-chengdu.aliyuncs.com/b77920bdbc70c121c5447f0825b3851258f05685bec146e6c994d83179efcb92.jpeg",
-                "openingTime": "08:30",
-                "closingTime": "19:45",
-                "latitude": 1.0,
-                "longitude": 1.0,
-                "status": 0,
-                "id": 17,
-                "createTime": 1746008737000,
-                "ifLock": 1,
-                "userName": "Tsuki",
-                "userId": 10151,
-                "memberCount": 5,
-                "saleAmount": 101
+                "id": 118,
+                "createTime": 1748066729000,
+                "name": "核销002",
+                "status": 1,
+                "validityStartTime": 1747929600000,
+                "validityEndTime": 1748275200000
             },
             {
-                "name": "AAB测试门店",
-                "introduction": "",
-                "phone": "18900000000",
-                "contact": "小张",
-                "areaId": 110101,
-                "detailAddress": "12",
-                "logo": "https://lplb.oss-cn-chengdu.aliyuncs.com/3b41979098fdebb0644567a2b5b5c0598fd2f52dd106d93c5dc0bbe387df1df7.jpeg",
-                "openingTime": "08:30",
-                "closingTime": "21:00",
-                "latitude": 0.0,
-                "longitude": 0.0,
-                "status": 0,
-                "id": 13,
-                "createTime": 1742555083000,
-                "ifLock": 1,
-                "userName": "臻选岛创始人-肖祥",
-                "userId": 10208,
-                "memberCount": 5,
-                "saleAmount": 4
+                "id": 117,
+                "createTime": 1747806864000,
+                "name": "核销券001",
+                "status": 1,
+                "validityStartTime": 1747670400000,
+                "validityEndTime": 1748361600000
             },
             {
-                "name": "AAA测试门店",
-                "introduction": "",
-                "phone": "18988888869",
-                "contact": "小胡",
-                "areaId": 510104,
-                "detailAddress": "1",
-                "logo": "https://lplb.oss-cn-chengdu.aliyuncs.com/ee2ee3debbd0a3edf24b4975d30e400a952bfaf00f8dc4ca2a73fe634ad0d261.png",
-                "openingTime": "08:30",
-                "closingTime": "23:30",
-                "latitude": 0.0,
-                "longitude": 0.0,
-                "status": 0,
-                "id": 12,
-                "createTime": 1732632328000,
-                "ifLock": 1,
-                "userName": "拾-梦",
-                "userId": 10106,
-                "memberCount": 5,
-                "saleAmount": 221
+                "id": 115,
+                "createTime": 1746616163000,
+                "name": "测试注册222",
+                "status": 1,
+                "validityStartTime": 1746028800000,
+                "validityEndTime": 1748620800000
+            },
+            {
+                "id": 114,
+                "createTime": 1746615441000,
+                "name": "测试注册券",
+                "status": 1,
+                "validityStartTime": 1746547200000,
+                "validityEndTime": 1748620800000
+            },
+            {
+                "id": 110,
+                "createTime": 1745738100000,
+                "name": "111",
+                "status": 1,
+                "validityStartTime": None,
+                "validityEndTime": None
+            },
+            {
+                "id": 109,
+                "createTime": 1745547838000,
+                "name": "时长券",
+                "status": 1,
+                "validityStartTime": 1743436800000,
+                "validityEndTime": 1775232000000
+            },
+            {
+                "id": 108,
+                "createTime": 1745547838000,
+                "name": "鞋子",
+                "status": 1,
+                "validityStartTime": 1743436800000,
+                "validityEndTime": 1775232000000
+            },
+            {
+                "id": 107,
+                "createTime": 1745547818000,
+                "name": "鸡蛋",
+                "status": 1,
+                "validityStartTime": 1743436800000,
+                "validityEndTime": 1774972800000
             }
         ],
-        "total": 5
+        "total": 11
     },
     "msg": ""
 }
-b=jsonpath(a,f'$.data.list[?(@.id=={26})].id')
-print(comMethod('maimai100').compareResult(26,b,1))
+# b=jsonpath(a,f'$.data.list[?(@.id !={118})].id')
+# print(b)
+# print(comMethod('maimai100').compareResult(26,b,1))
 
 # async def task1():
 #     print(datetime.datetime.now(),111)
@@ -194,7 +208,7 @@ print(comMethod('maimai100').compareResult(26,b,1))
 # timestamp = int(time.mktime(time.strptime(time_str, "%Y-%m-%d %H:%M:%S")))*1000
 # print(timestamp)
 # print(datetime.datetime.now().date())
-formatTime=datetime.datetime.fromtimestamp(1748615996).strftime('%Y-%m-%d %H:%M:%S')
+formatTime=datetime.datetime.fromtimestamp(1749193601).strftime('%Y-%m-%d %H:%M:%S')
 print(formatTime)
 # addDataday=datetime.datetime.now().date()-datetime.timedelta(-1)
 # print(addDataday.strftime('%Y%m%d'))

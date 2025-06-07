@@ -1,14 +1,36 @@
 import time
+import asyncio
 from sceneScript import pickUpStore
 from sceneScript import welfareCoupon
+from sceneScript import mallSaas
+from sceneScript import tradeSale
 
 # env='kuaileyouxuan'
 # env='preprod'
 env='maimai100'
-# ten=pickUpStore.pickUpStore(env)
-# res=ten.runStoreApi()
-ten=welfareCoupon.welfareCoupon(env)
-for i in range(10):
-    res=ten.takeCoupon()
-    print(res)
-    time.sleep(4)
+
+ten=pickUpStore.pickUpStore(env)
+# res=ten.getStore('测试门店')
+res=ten.runStoreApi()
+
+# ten=welfareCoupon.welfareCoupon(env)
+# for i in range(30):
+#     # for j in ('30547','30551','30550'):
+#     # couid='30547'
+#     couid='1197'
+#     # couid='30553'
+#     # couid='30552'
+#     res=ten.takeCoupon(couid)
+#     print(res)
+#     time.sleep(6)
+# res=ten.getCouponType()
+# res=ten.getCouponPage()
+# res=ten.exportCouponPage()
+
+# ten=mallSaas.mallSaas(env)
+# res=ten.getMall()
+print(res)
+
+# ten=tradeSale.tradeOrder(env)
+# res=ten.getOderList()
+# print(res)

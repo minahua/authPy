@@ -1,8 +1,8 @@
 from enum import Enum
 
 class baseData(Enum):
-    authorization='Bearer '+'bd03e9fd8f7b4e2695a00c3adb463235'
-    authorizationH5='Bearer '+'829139e7834e4518a3fb1915ec7c0f99'
+    authorization='Bearer '+'64798f34fcfb4ddbbfffd3c663b545cb'
+    authorizationH5='Bearer '+'37436777a5dd40c78ff18e3810b5e79b'
     authorizationH5Name='哈哈'
     err_req='请求方式不正确'
     err_comTpye='比较方式不正确'
