@@ -47,7 +47,7 @@ class comMethod():
 
     def sendRequests1(self, method, api, body=None):
         """
-        发送https请求
+        发送https请求：http.client请求
         :param method: 请求方法
         :param api: 请求地址
         :param body: 请求body
@@ -76,7 +76,7 @@ class comMethod():
 
     def sendRequests(self, method, api, body=None):
         """
-        发送https请求
+        发送https请求 request请求
         :param method: 请求方法
         :param api: 请求地址
         :param body: 请求body
@@ -94,7 +94,7 @@ class comMethod():
         else:
             return {'status':999,'msg':self.envComData.err_req.value}
         # response=res.json()
-        # print(res.status_code,response)
+        # print(res.status_code,api,body)
         return {'status':res.status_code,
                 'method':method,
                 'api':api,

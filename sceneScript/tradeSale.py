@@ -6,7 +6,7 @@ class tradeOrder():
         self.comMethod=comMethod(env)
         self.jsPath=jsonpath
 
-    def getOderList(self):
+    def getOrderList(self):
         """
         查询订单列表
         :return:
@@ -16,7 +16,7 @@ class tradeOrder():
         res = self.comMethod.sendRequests(reqMethod, apiInfo)
         return res
 
-    def getOderDetail(self,orderId):
+    def getOrderDetail(self,orderId):
         """
         查询订单列表
         :return:
@@ -29,10 +29,12 @@ class tradeOrder():
     def manageAfterSale(self,orderItemId,refundPrice):
         """
         申请售后
+        :param orderItemId: 商户单号
+        :param refundPrice:付款金额
         :return:
         """
         reqMethod = 'post'
-        apiInfo = f'admin-api/trade/after-sale/manageAfterSale'
+        apiInfo = f'/admin-api/trade/after-sale/manageAfterSale'
         bodyInfo={
                 "orderItemId": orderItemId,
                 "way": 10,
@@ -52,3 +54,12 @@ class tradeOrder():
         bodyInfo={"id": orderItemId}
         res = self.comMethod.sendRequests(reqMethod, apiInfo,body=bodyInfo)
         return res
+
+    def testAfterSale(self,orderId):
+        resultsInfo = []
+        res_getOrder=self.getOrderDetail(orderId)
+        resultsInfo.append(res_getOrder)
+        orderItemId=jsonpath(res_getOrder.get('result'),'$.data.id')
+        refundPrice=jsonpath(res_getOrder.get('result'),'$.data.payPrice')
+        res_afterSale=self.manageAfterSale(orderItemId,refundPrice)
+        resultsInfo.append(res_afterSale)
