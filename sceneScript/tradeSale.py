@@ -55,6 +55,29 @@ class tradeOrder():
         res = self.comMethod.sendRequests(reqMethod, apiInfo,body=bodyInfo)
         return res
 
+    def createOrder(self,orderItemId):
+        """
+        核销
+        :return:
+        """
+        reqMethod = 'post'
+        apiInfo = f'/app-api/trade/order/create'
+        bodyInfo={
+                "nonceStr": 1749695043818,
+                "items": [
+                    {
+                        "skuId": 346,
+                        "count": "20"
+                    }
+                ],
+                "pickUpStoreId": 28,
+                "deliveryType": 2,
+                "pointStatus": false,
+                "remark": ""
+            }
+        res = self.comMethod.sendRequests(reqMethod, apiInfo,body=bodyInfo)
+        return res
+
     def testAfterSale(self,orderId):
         resultsInfo = []
         res_getOrder=self.getOrderDetail(orderId)

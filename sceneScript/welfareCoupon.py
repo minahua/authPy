@@ -107,7 +107,7 @@ class welfareCoupon():
                   "couponTypeObj": "{\"id\":120,\"name\":\"福利券\"}",
                   "couponType": 1,
                   "activityId": "1834055349401705",
-                  "grantEndTime": 1749196346000,
+                  "grantEndTime": 1751212800000,
                   "watchDuration": 2,
                   "activityName": "希望123"
                 }
@@ -121,11 +121,10 @@ class welfareCoupon():
         """
         reqMethod = 'post'
         apiInfo = '/app-api/product/user-coupon/take'
-        nickname = self.comMethod.envComData.authorizationH5Name.value
         self.comMethod.getHeaders('h5')
         bodyInfo = {
             "couponId": couponId,
-            "nickname": nickname,
+            "nickname": "hh123",
         }
         res = self.comMethod.sendRequests(reqMethod, apiInfo, bodyInfo)
         return res

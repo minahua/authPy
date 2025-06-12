@@ -6,7 +6,7 @@ class pickUpStore():
         self.comMethod=comMethod(env)
         self.jsPath=jsonpath
 
-    def creatStore(self):
+    def creatStore(self,num=0):
         """
         新增门店
         :return:
@@ -15,8 +15,9 @@ class pickUpStore():
         apiInfo='/admin-api/trade/delivery/pick-up-store/create'
         dataDay=self.comMethod.getAnyDay()
         logo=self.comMethod.envData.logoQc.value
+        name=f"新增测试门店{dataDay}-{num}"
         bodyInfo={
-                    "name": "新增测试门店"+dataDay,
+                    "name": name,
                     "phone": "135"+dataDay,
                     "logo": logo,
                     "detailAddress": "测试门店"+dataDay,

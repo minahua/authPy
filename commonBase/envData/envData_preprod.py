@@ -2,6 +2,7 @@ from enum import Enum
 
 class env_preprod(Enum):
     host='syapi.preprod.kuaileyouxuan.com'
+    # host='qxapi.xiaomai100.com'
     userId='yfbcshjadmin'
     passWord='yfbcshjadmin'
     tenantName='预发布测试环境'

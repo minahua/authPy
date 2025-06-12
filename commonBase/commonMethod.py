@@ -26,7 +26,7 @@ class comMethod():
             self.envData = env_maimai
         self.envComData = baseData
         # self.con = http.client.HTTPSConnection(self.envData.host.value)
-        self.con = requests
+        # self.con = requests
         self.getHeaders()
 
     def getHeaders(self,loginId='manage'):
@@ -45,7 +45,7 @@ class comMethod():
                         'Tenant-id': tenantid,
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36'}
 
-    def sendRequests1(self, method, api, body=None):
+    def sendRequests(self, method, api, body=None):
         """
         发送https请求：http.client请求
         :param method: 请求方法
@@ -53,6 +53,7 @@ class comMethod():
         :param body: 请求body
         :return: 请求结果
         """
+        self.con = http.client.HTTPSConnection(self.envData.host.value)
         if method == 'get':
             self.con.request('GET', api, headers=self.headers)
         elif method == 'post':
@@ -71,10 +72,10 @@ class comMethod():
                 'api':api,
                 'body':body,
                 # 'result':json.loads(gzip.decompress(response.read()).decode())
-                'result':response.read().decode()
+                'result':json.loads(response.read().decode())
                 }
 
-    def sendRequests(self, method, api, body=None):
+    def sendRequests1(self, method, api, body=None):
         """
         发送https请求 request请求
         :param method: 请求方法
@@ -82,6 +83,7 @@ class comMethod():
         :param body: 请求body
         :return: 请求结果
         """
+        self.con = requests
         url='https://'+self.envData.host.value+api
         if method == 'get':
             res=self.con.request('GET', url, headers=self.headers)
@@ -94,7 +96,7 @@ class comMethod():
         else:
             return {'status':999,'msg':self.envComData.err_req.value}
         # response=res.json()
-        # print(res.status_code,api,body)
+        print(res.status_code,api,body)
         return {'status':res.status_code,
                 'method':method,
                 'api':api,
