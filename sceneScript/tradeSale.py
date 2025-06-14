@@ -55,9 +55,9 @@ class tradeOrder():
         res = self.comMethod.sendRequests(reqMethod, apiInfo,body=bodyInfo)
         return res
 
-    def createOrder(self,orderItemId):
+    def createFlOrder(self,orderItemId):
         """
-        核销
+        福利商品兑换
         :return:
         """
         reqMethod = 'post'
@@ -72,7 +72,30 @@ class tradeOrder():
                 ],
                 "pickUpStoreId": 28,
                 "deliveryType": 2,
-                "pointStatus": false,
+                "pointStatus": False,
+                "remark": ""
+            }
+        res = self.comMethod.sendRequests(reqMethod, apiInfo,body=bodyInfo)
+        return res
+
+    def createScOrder(self,orderItemId):
+        """
+        福利商品兑换
+        :return:
+        """
+        reqMethod = 'post'
+        apiInfo = f'/app-api/trade/order/create'
+        bodyInfo={
+                "nonceStr": 1749695043818,
+                "items": [
+                    {
+                        "skuId": 346,
+                        "count": "20"
+                    }
+                ],
+                "pickUpStoreId": 28,
+                "deliveryType": 2,
+                "pointStatus": False,
                 "remark": ""
             }
         res = self.comMethod.sendRequests(reqMethod, apiInfo,body=bodyInfo)

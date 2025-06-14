@@ -6,6 +6,7 @@ class env_preprod(Enum):
     userId='yfbcshjadmin'
     passWord='yfbcshjadmin'
     tenantName='预发布测试环境'
+    # tenantId='999171'
     tenantId='999170'
     wxMobile=''
     mysqlHost = 'oa8ao9je0oituebiethiu4bohvoocupe.rwlb.rds.aliyuncs.com'

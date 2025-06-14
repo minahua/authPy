@@ -7,18 +7,18 @@ from sceneScript import tradeSale
 from sceneScript import productSpu
 
 # env='kuaileyouxuan'
-env='preprod'
-# env='maimai100'
+# env='preprod'
+env='maimai100'
 
-# ten=productSpu.productSpu(env)
-# res=ten.getCategory()
+ten=productSpu.productSpu(env)
+res=ten.getCategory()
 # res=ten.createCategory()
 # res=ten.getBrand()
 # res=ten.createBrand()
 # res=ten.getProperty()
 # res=ten.createProperty()
 # res=ten.getSpu()
-# print(res)
+print(res)
 
 # ten=pickUpStore.pickUpStore(env)
 # for i in range(1,110):
@@ -27,16 +27,16 @@ env='preprod'
 # res=ten.getStore('测试门店')
 # res=ten.runStoreApi()
 
-ten=welfareCoupon.welfareCoupon(env)
-for i in range(30):
-    # for j in ('30547','30551','30550'):
-    # couid='30547'
-    couid='1194'
-    # couid='30553'
-    # couid='30552'
-    res=ten.takeCoupon(couid)
-    print(res)
-    time.sleep(6)
+# ten=welfareCoupon.welfareCoupon(env)
+# for i in range(20):
+#     # for j in ('30547','30551','30550'):
+#     # couid='30547'
+#     couid='1209'
+#     # couid='30553'
+#     # couid='30552'
+#     res=ten.takeCoupon(couid)
+#     print(res)
+#     time.sleep(6)
 # res=ten.getCouponType()
 # res=ten.getCouponPage()
 # res=ten.exportCouponPage()

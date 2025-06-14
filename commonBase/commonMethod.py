@@ -170,7 +170,7 @@ class comMethod():
         self.cur.execute(sql)
         if operateType:
             self.conSjk.commit()
-            self.conSjk.close()
+            # self.conSjk.close()
             res = '数据提交成功'
         else:
             res = self.cur.fetchall()
@@ -209,17 +209,59 @@ class comMethod():
         return parse.quote(strUrl)
 
 if __name__ == '__main__':
+    import json
     env = 'maimai100'
     demo = comMethod(env)
     demo.conMysql()
-    sql = 'select * from infra_api_error_log where id =1'
-    res = demo.operateMysql(sql)
-    for i in res:
-        print(i['exception_message'])
-    demo.getHeaders()
-    api = '/admin-api/trade/delivery/pick-up-store/page?pageNo=1&pageSize=10'
-    res1 = demo.sendRequests('get', api)
+
+    # 批量插入
+    sql1=f"select max(id) from trade_order"
+    sql2=f"select max(id) from trade_order_item"
+    res1=demo.operateMysql(sql1)
     print(res1)
+    orderId=int(res1[0]['max(id)'])+1
+    res2=demo.operateMysql(sql2)
+    print(res2)
+    itemId=int(res2[0]['max(id)'])+1
+    for i in range(10):
+        sql3=f"INSERT INTO `live-mall-test`.`trade_order_item` (`id`, `user_id`, `order_id`, `cart_id`, `spu_id`, `spu_name`, `sku_id`, `properties`, `pic_url`, `count`, `comment_status`, `price`, `discount_price`, `delivery_price`, `adjust_price`, `pay_price`, `coupon_price`, `point_price`, `use_point`, `give_point`, `vip_price`, `after_sale_id`, `after_sale_status`, `creator`, `create_time`, `updater`, `update_time`, `deleted`, `tenant_id`, `store_id`, `commission_sharing_ratio`, `coupon_type_id`, `coupon_type_name`, `coupon_quantity`) VALUES "
+        sql4 = f"INSERT INTO `live-mall-test`.`trade_order` (`id`, `no`, `type`, `terminal`, `user_id`, `user_ip`, `user_remark`, `status`, `product_count`, `cancel_type`, `remark`, `comment_status`, `brokerage_user_id`, `pay_order_id`, `pay_status`, `pay_time`, `pay_channel_code`, `finish_time`, `cancel_time`, `total_price`, `discount_price`, `delivery_price`, `adjust_price`, `pay_price`, `delivery_type`, `logistics_id`, `logistics_no`, `delivery_time`, `receive_time`, `receiver_name`, `receiver_mobile`, `receiver_area_id`, `receiver_detail_address`, `pick_up_store_id`, `pick_up_verify_code`, `refund_status`, `refund_price`, `coupon_id`, `coupon_price`, `use_point`, `point_price`, `give_point`, `refund_point`, `vip_price`, `seckill_activity_id`, `bargain_activity_id`, `bargain_record_id`, `combination_activity_id`, `combination_head_id`, `combination_record_id`, `creator`, `create_time`, `create_day`, `updater`, `update_time`, `deleted`, `tenant_id`, `store_id`, `activity_id`, `if_write_off`, `write_user_id`, `write_user_name`, `write_time`, `history_store_id`, `cancel_user_id`, `cancel_user_name`, `sl_trade_id`, `refund_deadline`, `commission_sharing_ratio`) VALUES "
+        for j in range(1000):
+            orderId1=orderId+i*1000+j
+            itemId1=itemId+i*1000+j
+            nums=(i+1)*10000+j
+            sql4+=f"({orderId1}, 'o20250601{nums}12', 0, 0, 10223, '118.112.58.6', '', 10, 1, NULL, NULL, b'0', NULL, 487, b'1', '2025-05-03 14:02:55', 'huifu_wx_pub', NULL, NULL, 1, 0, 0, 0, 1, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '53532257', 0, 0, NULL, 0, 0, 0, 2, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, '10049', '2025-05-03 15:32:11', 20250603, NULL, '2025-05-03 19:18:05', b'0', 171, 2, '0', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+            sql3+=f"({itemId1}, 10223, {orderId1}, NULL, 703, 'test3', 165, '"+json.dumps([{"valueId": 0, "valueName": "123", "propertyId": 0, "propertyName": "默认"}])+"', 'https://lplb.oss-cn-chengdu.aliyuncs.com/54b12463ca145ca1236366881aa1e03147b7039e50800fc76cd5b929e930b981.jpg', 1, b'0', 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, NULL, 0, '10106', '2025-05-03 15:32:11', '10106', '2025-05-03 19:18:25', b'0', 171, 12, NULL, '', '', 0),"
+        print(sql3[:-1])
+        print(sql4[:-1])
+        res3=demo.operateMysql(sql3[:-1],operateType=1)
+        print(res3)
+        res4=demo.operateMysql(sql4[:-1],operateType=1)
+        print(res4)
+
+    # 单条插入
+    # orderId=19233
+    # itemId=19251
+    # for i in range(1,50000):
+    #     orderId1=orderId+i
+    #     itemId1=itemId+i
+    #     nums=10000+i
+    #     try:
+    #         sql1=f"INSERT INTO `live-mall-test`.`trade_order_item` (`id`, `user_id`, `order_id`, `cart_id`, `spu_id`, `spu_name`, `sku_id`, `properties`, `pic_url`, `count`, `comment_status`, `price`, `discount_price`, `delivery_price`, `adjust_price`, `pay_price`, `coupon_price`, `point_price`, `use_point`, `give_point`, `vip_price`, `after_sale_id`, `after_sale_status`, `creator`, `create_time`, `updater`, `update_time`, `deleted`, `tenant_id`, `store_id`, `commission_sharing_ratio`, `coupon_type_id`, `coupon_type_name`, `coupon_quantity`) VALUES ({itemId1}, 10223, {orderId1}, NULL, 703, 'test3', 165, '"+json.dumps([{"valueId": 0, "valueName": "123", "propertyId": 0, "propertyName": "默认"}])+"', 'https://lplb.oss-cn-chengdu.aliyuncs.com/54b12463ca145ca1236366881aa1e03147b7039e50800fc76cd5b929e930b981.jpg', 1, b'0', 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, NULL, 0, '10106', '2025-06-03 15:32:11', '10106', '2025-06-03 19:18:25', b'0', 171, 12, NULL, '', '', 0);"
+    #         print(sql1)
+    #         sql2 = f"INSERT INTO `live-mall-test`.`trade_order` (`id`, `no`, `type`, `terminal`, `user_id`, `user_ip`, `user_remark`, `status`, `product_count`, `cancel_type`, `remark`, `comment_status`, `brokerage_user_id`, `pay_order_id`, `pay_status`, `pay_time`, `pay_channel_code`, `finish_time`, `cancel_time`, `total_price`, `discount_price`, `delivery_price`, `adjust_price`, `pay_price`, `delivery_type`, `logistics_id`, `logistics_no`, `delivery_time`, `receive_time`, `receiver_name`, `receiver_mobile`, `receiver_area_id`, `receiver_detail_address`, `pick_up_store_id`, `pick_up_verify_code`, `refund_status`, `refund_price`, `coupon_id`, `coupon_price`, `use_point`, `point_price`, `give_point`, `refund_point`, `vip_price`, `seckill_activity_id`, `bargain_activity_id`, `bargain_record_id`, `combination_activity_id`, `combination_head_id`, `combination_record_id`, `creator`, `create_time`, `create_day`, `updater`, `update_time`, `deleted`, `tenant_id`, `store_id`, `activity_id`, `if_write_off`, `write_user_id`, `write_user_name`, `write_time`, `history_store_id`, `cancel_user_id`, `cancel_user_name`, `sl_trade_id`, `refund_deadline`, `commission_sharing_ratio`) VALUES ({orderId1}, 'o20250901{nums}12', 0, 0, 10223, '118.112.58.6', '', 10, 1, NULL, NULL, b'0', NULL, 487, b'1', '2025-06-03 14:02:55', 'huifu_wx_pub', NULL, NULL, 1, 0, 0, 0, 1, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '53532257', 0, 0, NULL, 0, 0, 0, 2, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, '10049', '2025-06-13 15:32:11', 20250603, NULL, '2025-06-03 19:18:05', b'0', 171, 2, '0', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);"
+    #         print(sql2)
+    #         res = demo.operateMysql(sql1,operateType=1)
+    #         print(res)
+    #         res1 = demo.operateMysql(sql2,operateType=1)
+    #         print(res1)
+    #     except Exception as e:
+    #         print(e)
+
+    # demo.getHeaders()
+    # api = '/admin-api/trade/delivery/pick-up-store/page?pageNo=1&pageSize=10'
+    # res1 = demo.sendRequests('get', api)
+    # print(res1)
 
 # baseUrl_maimai100='api-staging.maimai100.cn'
 # # baseUrl_maimai100='syams-staging.maimai100.cn'
