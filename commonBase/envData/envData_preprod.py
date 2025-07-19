@@ -3,11 +3,12 @@ from enum import Enum
 class env_preprod(Enum):
     host='syapi.preprod.kuaileyouxuan.com'
     # host='qxapi.xiaomai100.com'
+    # host='api.staging.wuyouzhida.com'
     userId='yfbcshjadmin'
     passWord='yfbcshjadmin'
     tenantName='预发布测试环境'
     # tenantId='999171'
-    tenantId='999170'
+    tenantId='999168'
     wxMobile=''
     mysqlHost = 'oa8ao9je0oituebiethiu4bohvoocupe.rwlb.rds.aliyuncs.com'
     mysqlPort = '3306'

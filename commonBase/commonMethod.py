@@ -9,6 +9,7 @@ from urllib import parse
 from commonBase.envData.envData_maimai100 import env_maimai
 from commonBase.envData.envData_kuaileyouxuan import env_kuaile
 from commonBase.envData.envData_preprod import env_preprod
+from commonBase.envData.envData_lll import env_lll
 from commonBase.envData.commonData import baseData
 
 
@@ -22,8 +23,10 @@ class comMethod():
             self.envData = env_kuaile
         elif env=='preprod':
             self.envData = env_preprod
+        elif env=='lll':
+            self.envData=env_lll
         else:
-            self.envData = env_maimai
+            self.envData = env_kuaile
         self.envComData = baseData
         # self.con = http.client.HTTPSConnection(self.envData.host.value)
         # self.con = requests
@@ -72,7 +75,7 @@ class comMethod():
                 'api':api,
                 'body':body,
                 # 'result':json.loads(gzip.decompress(response.read()).decode())
-                'result':json.loads(response.read().decode())
+                'result':self.getResultFormatTime(json.loads(response.read().decode()))
                 }
 
     def sendRequests1(self, method, api, body=None):
@@ -123,6 +126,16 @@ class comMethod():
         with open(r'D:\authPy\test\test.xlsx', 'wb') as f:
             f.write(con.getresponse().read())
         return '下载保存成功'
+
+    def getResultFormatTime(self,results):
+        for res in results:
+            if isinstance(results[res],dict):
+                res1=self.getResultFormatTime(results[res])
+                results[res]=res1
+            elif isinstance(results[res],int) and 'time' in res.lower():
+                trsTime=int(str(results[res])[:10])
+                results[res]=datetime.datetime.fromtimestamp(trsTime).strftime('%Y-%m-%d %H:%M:%S')
+        return results
 
     def compareResult(self, exceptInfo, resultInfo,comType):
         """
@@ -214,32 +227,56 @@ if __name__ == '__main__':
     demo = comMethod(env)
     demo.conMysql()
 
-    # 批量插入
-    sql1=f"select max(id) from trade_order"
-    sql2=f"select max(id) from trade_order_item"
-    res1=demo.operateMysql(sql1)
+    # 批量插入福利券领取数据
+    # sql1=f"INSERT INTO `product_user_coupon` ( `creator`, `create_time`, `updater`, `update_time`, `deleted`, `tenant_id`, `user_id`, `user_name`, `coupon_id`, `coupon_type_id`, `coupon_type_name`, `num`, `status`, `validity_time`, `store_id`) VALUES"
+    sql1=f"INSERT INTO `live-mall-test`.`product_user_coupon` ( `creator`, `create_time`, `updater`, `update_time`, `deleted`, `tenant_id`, `user_id`, `user_name`, `coupon_id`, `coupon_type_id`, `coupon_type_name`, `num`, `status`, `validity_time`, `use_time`, `verify_user_id`, `verify_user_name`, `merge_flag`, `commodity_id`, `commodity_name`, `store_id`) VALUES"
+    # sql1=f"INSERT INTO `live-mall-test`.`product_user_coupon` (`creator`, `create_time`, `updater`, `update_time`, `deleted`, `tenant_id`, `user_id`, `user_name`, `coupon_id`, `coupon_type_id`, `coupon_type_name`, `num`, `status`, `validity_time`, `store_id`) VALUES ( '10200', '2025-06-14 11:25:39', '10200', '2025-06-18 11:03:24', b'0', 166, 10200, 'hh123', 30578, 119, '失效福利券001', 1, -1, '2025-06-14 00:00:00', 28)"
+    for i in range(2,168):
+        dataYMD = (datetime.datetime.now().date() - datetime.timedelta(i)).strftime('%Y-%m-%d')
+        for j in range(10):
+            for z in range(11,60,3):
+                # sql1+=f"( '10200', '{dataYMD} 1{j}:{z}:{z+3}', '10200', '{dataYMD} 1{j}:{z}:{z+3}', b'0', 166, 10200, '岁月静好', 30553, 107, '鸡蛋', 1, 0, '2025-06-28 00:00:00', 28),"
+                sql1+=f" ( '10200', '{dataYMD} 1{j}:{z}:{z-1}', '10200', '{dataYMD} 1{j}:{z}:{z}', b'0', 166, 10106, '拾-梦', 30527, 118, '核销002', 1, 1, '2025-06-28 00:00:00', '{dataYMD} 1{j}:{z}:{z}', 10200, '岁月静好', NULL, NULL, '其他商品', 28),"
+                # sql1+=f"( '10200', '{dataYMD} 1{j}:{z}:{z+3}', '10200', '{dataYMD} 1{j}:{z}:{z+3}', b'0', 166, 10200, '岁月静好', 30553, 107, '鸡蛋', 1, 0, '2025-06-28 00:00:00', 28),"
+    res1=demo.operateMysql(sql1[:-1],operateType=1)
     print(res1)
-    orderId=int(res1[0]['max(id)'])+1
-    res2=demo.operateMysql(sql2)
-    print(res2)
-    itemId=int(res2[0]['max(id)'])+1
-    for i in range(10):
-        sql3=f"INSERT INTO `live-mall-test`.`trade_order_item` (`id`, `user_id`, `order_id`, `cart_id`, `spu_id`, `spu_name`, `sku_id`, `properties`, `pic_url`, `count`, `comment_status`, `price`, `discount_price`, `delivery_price`, `adjust_price`, `pay_price`, `coupon_price`, `point_price`, `use_point`, `give_point`, `vip_price`, `after_sale_id`, `after_sale_status`, `creator`, `create_time`, `updater`, `update_time`, `deleted`, `tenant_id`, `store_id`, `commission_sharing_ratio`, `coupon_type_id`, `coupon_type_name`, `coupon_quantity`) VALUES "
-        sql4 = f"INSERT INTO `live-mall-test`.`trade_order` (`id`, `no`, `type`, `terminal`, `user_id`, `user_ip`, `user_remark`, `status`, `product_count`, `cancel_type`, `remark`, `comment_status`, `brokerage_user_id`, `pay_order_id`, `pay_status`, `pay_time`, `pay_channel_code`, `finish_time`, `cancel_time`, `total_price`, `discount_price`, `delivery_price`, `adjust_price`, `pay_price`, `delivery_type`, `logistics_id`, `logistics_no`, `delivery_time`, `receive_time`, `receiver_name`, `receiver_mobile`, `receiver_area_id`, `receiver_detail_address`, `pick_up_store_id`, `pick_up_verify_code`, `refund_status`, `refund_price`, `coupon_id`, `coupon_price`, `use_point`, `point_price`, `give_point`, `refund_point`, `vip_price`, `seckill_activity_id`, `bargain_activity_id`, `bargain_record_id`, `combination_activity_id`, `combination_head_id`, `combination_record_id`, `creator`, `create_time`, `create_day`, `updater`, `update_time`, `deleted`, `tenant_id`, `store_id`, `activity_id`, `if_write_off`, `write_user_id`, `write_user_name`, `write_time`, `history_store_id`, `cancel_user_id`, `cancel_user_name`, `sl_trade_id`, `refund_deadline`, `commission_sharing_ratio`) VALUES "
-        for j in range(1000):
-            orderId1=orderId+i*1000+j
-            itemId1=itemId+i*1000+j
-            nums=(i+1)*10000+j
-            sql4+=f"({orderId1}, 'o20250601{nums}12', 0, 0, 10223, '118.112.58.6', '', 10, 1, NULL, NULL, b'0', NULL, 487, b'1', '2025-05-03 14:02:55', 'huifu_wx_pub', NULL, NULL, 1, 0, 0, 0, 1, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '53532257', 0, 0, NULL, 0, 0, 0, 2, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, '10049', '2025-05-03 15:32:11', 20250603, NULL, '2025-05-03 19:18:05', b'0', 171, 2, '0', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
-            sql3+=f"({itemId1}, 10223, {orderId1}, NULL, 703, 'test3', 165, '"+json.dumps([{"valueId": 0, "valueName": "123", "propertyId": 0, "propertyName": "默认"}])+"', 'https://lplb.oss-cn-chengdu.aliyuncs.com/54b12463ca145ca1236366881aa1e03147b7039e50800fc76cd5b929e930b981.jpg', 1, b'0', 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, NULL, 0, '10106', '2025-05-03 15:32:11', '10106', '2025-05-03 19:18:25', b'0', 171, 12, NULL, '', '', 0),"
-        print(sql3[:-1])
-        print(sql4[:-1])
-        res3=demo.operateMysql(sql3[:-1],operateType=1)
-        print(res3)
-        res4=demo.operateMysql(sql4[:-1],operateType=1)
-        print(res4)
 
-    # 单条插入
+    # 批量插入直播统计数据
+    # sql1=f"INSERT INTO `live-mall-test`.`live_user_behavior` (`tenant_id`, `activity_id`, `store_id`, `user_id`, `watch_duration`, `watch_time`, `creator`, `create_time`, `updater`, `update_time`, `deleted`) VALUES "
+    # for i in range(1,9):
+    #     for j in range(3):
+    #         da=f'2025-02-{j}{i} '
+    #         titi=demo.getTimeStamp(da+'21:00:11')
+    #         sql1+=f"(166, '1834221637925018', 28, 10200, 15, {titi}, NULL, '{da} 12:00:04', NULL, '{da} 12:00:04', b'0'),"
+    # res1=demo.operateMysql(sql1[:-1],operateType=1)
+    # print(res1)
+
+    # 批量插入订单、订单明细数据
+    # sql1=f"select max(id) from trade_order"
+    # sql2=f"select max(id) from trade_order_item"
+    # res1=demo.operateMysql(sql1)
+    # print(res1)
+    # orderId=int(res1[0]['max(id)'])+1
+    # res2=demo.operateMysql(sql2)
+    # print(res2)
+    # itemId=int(res2[0]['max(id)'])+1
+    # for i in range(10):
+    #     sql3=f"INSERT INTO `live-mall-test`.`trade_order_item` (`id`, `user_id`, `order_id`, `cart_id`, `spu_id`, `spu_name`, `sku_id`, `properties`, `pic_url`, `count`, `comment_status`, `price`, `discount_price`, `delivery_price`, `adjust_price`, `pay_price`, `coupon_price`, `point_price`, `use_point`, `give_point`, `vip_price`, `after_sale_id`, `after_sale_status`, `creator`, `create_time`, `updater`, `update_time`, `deleted`, `tenant_id`, `store_id`, `commission_sharing_ratio`, `coupon_type_id`, `coupon_type_name`, `coupon_quantity`) VALUES "
+    #     sql4 = f"INSERT INTO `live-mall-test`.`trade_order` (`id`, `no`, `type`, `terminal`, `user_id`, `user_ip`, `user_remark`, `status`, `product_count`, `cancel_type`, `remark`, `comment_status`, `brokerage_user_id`, `pay_order_id`, `pay_status`, `pay_time`, `pay_channel_code`, `finish_time`, `cancel_time`, `total_price`, `discount_price`, `delivery_price`, `adjust_price`, `pay_price`, `delivery_type`, `logistics_id`, `logistics_no`, `delivery_time`, `receive_time`, `receiver_name`, `receiver_mobile`, `receiver_area_id`, `receiver_detail_address`, `pick_up_store_id`, `pick_up_verify_code`, `refund_status`, `refund_price`, `coupon_id`, `coupon_price`, `use_point`, `point_price`, `give_point`, `refund_point`, `vip_price`, `seckill_activity_id`, `bargain_activity_id`, `bargain_record_id`, `combination_activity_id`, `combination_head_id`, `combination_record_id`, `creator`, `create_time`, `create_day`, `updater`, `update_time`, `deleted`, `tenant_id`, `store_id`, `activity_id`, `if_write_off`, `write_user_id`, `write_user_name`, `write_time`, `history_store_id`, `cancel_user_id`, `cancel_user_name`, `sl_trade_id`, `refund_deadline`, `commission_sharing_ratio`) VALUES "
+    #     for j in range(1000):
+    #         orderId1=orderId+i*1000+j
+    #         itemId1=itemId+i*1000+j
+    #         nums=(i+1)*10000+j
+    #         sql4+=f"({orderId1}, 'o20250601{nums}12', 0, 0, 10223, '118.112.58.6', '', 10, 1, NULL, NULL, b'0', NULL, 487, b'1', '2025-05-03 14:02:55', 'huifu_wx_pub', NULL, NULL, 1, 0, 0, 0, 1, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, '53532257', 0, 0, NULL, 0, 0, 0, 2, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, '10049', '2025-05-03 15:32:11', 20250603, NULL, '2025-05-03 19:18:05', b'0', 171, 2, '0', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),"
+    #         sql3+=f"({itemId1}, 10223, {orderId1}, NULL, 703, 'test3', 165, '"+json.dumps([{"valueId": 0, "valueName": "123", "propertyId": 0, "propertyName": "默认"}])+"', 'https://lplb.oss-cn-chengdu.aliyuncs.com/54b12463ca145ca1236366881aa1e03147b7039e50800fc76cd5b929e930b981.jpg', 1, b'0', 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, NULL, 0, '10106', '2025-05-03 15:32:11', '10106', '2025-05-03 19:18:25', b'0', 171, 12, NULL, '', '', 0),"
+    #     print(sql3[:-1])
+    #     print(sql4[:-1])
+    #     res3=demo.operateMysql(sql3[:-1],operateType=1)
+    #     print(res3)
+    #     res4=demo.operateMysql(sql4[:-1],operateType=1)
+    #     print(res4)
+
+    # 单条插入订单、订单明细数据
     # orderId=19233
     # itemId=19251
     # for i in range(1,50000):

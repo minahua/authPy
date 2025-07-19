@@ -1,11 +1,11 @@
 from enum import Enum
 
 class env_kuaile(Enum):
-    host='staging-syams.kuaileyouxuan.com'
-    userId='bscshjadmin'
-    passWord='bscshjadmin'
-    tenantName='柏岁测试环境'
-    tenantId='999170'
+    host='staging-syapi.kuaileyouxuan.com'
+    userId='cshjzhadmin'
+    passWord='cshjzhadmin'
+    tenantName='测试环境租户'
+    tenantId='166'
     wxMobile=''
     mysqlHost = 'oa8ao9je0oituebiethiu4bohvoocupe.rwlb.rds.aliyuncs.com'
     mysqlPort = '3306'

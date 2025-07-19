@@ -96,7 +96,7 @@ class productSpu():
         res = self.comMethod.sendRequests(reqMethod, apiInfo)
         return res
 
-    def createSpu(self):
+    def createSpu(self,name):
         """
         创建商品
         :return:
@@ -104,8 +104,65 @@ class productSpu():
         reqMethod = 'post'
         apiInfo = '/admin-api/product/spu/create'
         bodyInfo={
-                "name": "LVLV",
-                "remark": 'test水果',
-                }
+                "name": name,
+                "categoryId": 111,
+                "productType": 0,
+                "keyword": name,
+                "picUrl": "https://static.kuaileyouxuan.com/e0ae5b3134e480423d3e3801adc3f8f1e54f0594d0bf467fa516a6d6f8f426ed.png",
+                "sliderPicUrls": [
+                    "https://static.kuaileyouxuan.com/e0ae5b3134e480423d3e3801adc3f8f1e54f0594d0bf467fa516a6d6f8f426ed.png"
+                ],
+                "introduction": name,
+                "deliveryTypes": [
+                    2
+                ],
+                "brandId": 13,
+                "specType": False,
+                "subCommissionType": False,
+                "skus": [
+                    {
+                        "price": 10,
+                        "marketPrice": 10,
+                        "costPrice": 10,
+                        "barCode": "",
+                        "picUrl": "https://static.kuaileyouxuan.com/ed725371c8a14c9c7ccb7161627d65f2b3bc7d15e6c4dfea6f7eedcc9073ea75.png",
+                        "stock": 123,
+                        "weight": 0.1,
+                        "volume": 0.1,
+                        "firstBrokeragePrice": 0,
+                        "secondBrokeragePrice": 0,
+                        "name": name
+                    }
+                ],
+                "description": "<p>大声道</p>",
+                "sort": 0,
+                "giveIntegral": 0,
+                "virtualSalesCount": 0,
+                "refundDeadline": 1751212800000,
+                "buyLimitNum": 0,
+                "buyLimitTimes": 0,
+                "userBuyLimit": "0,1,2,",
+                "visibleType": "0",
+                "storeScope": "",
+                "status": 0,
+                "couponQuantity": 1,
+                "pointQuantity": 1
+            }
+        res = self.comMethod.sendRequests(reqMethod, apiInfo,body=bodyInfo)
+        return res
+
+    def createSupplier(self,supplierName,contacts,phone):
+        """
+        创建供应商
+        :return:
+        """
+        reqMethod = 'post'
+        apiInfo = '/admin-api/product/supplier/createSupplier'
+        bodyInfo={
+                "supplierName": supplierName,
+                "contacts": contacts,
+                "phone": phone,
+                "address": "111"
+            }
         res = self.comMethod.sendRequests(reqMethod, apiInfo,body=bodyInfo)
         return res

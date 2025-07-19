@@ -101,6 +101,17 @@ class tradeOrder():
         res = self.comMethod.sendRequests(reqMethod, apiInfo,body=bodyInfo)
         return res
 
+    def writeOffOrder(self,orderIds):
+        """
+        核销订单
+        :return:
+        """
+        reqMethod = 'post'
+        apiInfo = f'/app-api/trade/order/writeOffOrder'
+        bodyInfo={"orderIds":orderIds}
+        res = self.comMethod.sendRequests(reqMethod, apiInfo,body=bodyInfo)
+        return res
+
     def testAfterSale(self,orderId):
         resultsInfo = []
         res_getOrder=self.getOrderDetail(orderId)
